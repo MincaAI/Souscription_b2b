@@ -2,13 +2,14 @@ import streamlit as st
 import time
 import json
 import re
-from openai import OpenAI
+from openai import OpenAI, AuthenticationError
 import io
 import os
 from dotenv import load_dotenv
 from pypdf import PdfReader
 from docx import Document
 from openpyxl import load_workbook
+import httpx
 
 load_dotenv() # Charge les variables du fichier .env dans l'environnement
 
@@ -309,7 +310,7 @@ def enrichment_layer_agent(data, perplexity_client, openai_client):
                     ],
                 )
                 search_results[key] = response.choices[0].message.content
-    except openai.AuthenticationError:
+    except AuthenticationError:
         st.error("Erreur d'authentification Perplexity. Veuillez vérifier votre clé API.")
         return data
     except Exception as e:
@@ -445,9 +446,12 @@ if uploaded_files:
         if not OPENAI_API_KEY or not PERPLEXITY_API_KEY:
             st.error("🛑 Clés API non trouvées. Assurez-vous d'avoir un fichier .env correctement configuré, ou si l'application est déployée, que les secrets sont bien configurés dans Streamlit Cloud.")
         else:
-            # Initialisation des clients, en forçant la conversion en chaîne pour plus de robustesse
-            openai_client = OpenAI(api_key=str(OPENAI_API_KEY))
-            perplexity_client = OpenAI(api_key=str(PERPLEXITY_API_KEY), base_url="https://api.perplexity.ai")
+            # Création d'un client http qui ignore les proxys de l'environnement
+            http_client = httpx.Client(proxies={})
+
+            # Initialisation des clients, en passant le client http configuré
+            openai_client = OpenAI(api_key=str(OPENAI_API_KEY), http_client=http_client)
+            perplexity_client = OpenAI(api_key=str(PERPLEXITY_API_KEY), base_url="https://api.perplexity.ai", http_client=http_client)
 
             # --- Smart Intake ---
             is_complete, extracted_data = smart_intake_agent(uploaded_files, openai_client)
