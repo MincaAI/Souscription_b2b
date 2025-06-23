@@ -32,11 +32,11 @@ REQUIRED_DOCS_LIST = [
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 PERPLEXITY_API_KEY = os.getenv("PERPLEXITY_API_KEY")
 
-# On nettoie les clés pour enlever les espaces accidentels (cause fréquente d'erreurs)
+# On nettoie les clés pour enlever les espaces et les sauts de ligne accidentels
 if OPENAI_API_KEY:
-    OPENAI_API_KEY = OPENAI_API_KEY.strip()
+    OPENAI_API_KEY = OPENAI_API_KEY.strip().replace("\n", "")
 if PERPLEXITY_API_KEY:
-    PERPLEXITY_API_KEY = PERPLEXITY_API_KEY.strip()
+    PERPLEXITY_API_KEY = PERPLEXITY_API_KEY.strip().replace("\n", "")
 
 
 # --- Fonctions d'Extraction de Texte ---
@@ -444,6 +444,13 @@ if uploaded_files:
         if not OPENAI_API_KEY or not PERPLEXITY_API_KEY:
             st.error("🛑 Clés API non trouvées. Assurez-vous d'avoir un fichier .env correctement configuré, ou si l'application est déployée, que les secrets sont bien configurés dans Streamlit Cloud.")
         else:
+            # --- Étape de débogage temporaire ---
+            st.warning("--- Débogage des clés API (Version 2) ---")
+            st.warning(f"Clé OpenAI lue : Longueur = {len(OPENAI_API_KEY)}, Aperçu = {OPENAI_API_KEY[:8]}...{OPENAI_API_KEY[-4:]}")
+            st.warning(f"Clé Perplexity lue : Longueur = {len(PERPLEXITY_API_KEY)}, Aperçu = {PERPLEXITY_API_KEY[:8]}...{PERPLEXITY_API_KEY[-4:]}")
+            st.warning("-----------------------------------------")
+            # -----------------------------------------
+
             # Initialisation des clients
             openai_client = openai.OpenAI(api_key=OPENAI_API_KEY)
             perplexity_client = openai.OpenAI(api_key=PERPLEXITY_API_KEY, base_url="https://api.perplexity.ai")
