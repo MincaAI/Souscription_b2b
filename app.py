@@ -2,7 +2,7 @@ import streamlit as st
 import time
 import json
 import re
-import openai
+from openai import OpenAI
 import io
 import os
 from dotenv import load_dotenv
