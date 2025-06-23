@@ -446,8 +446,8 @@ if uploaded_files:
             st.error("🛑 Clés API non trouvées. Assurez-vous d'avoir un fichier .env correctement configuré, ou si l'application est déployée, que les secrets sont bien configurés dans Streamlit Cloud.")
         else:
             # Initialisation des clients, en forçant la conversion en chaîne pour plus de robustesse
-            openai_client = openai.OpenAI(api_key=str(OPENAI_API_KEY))
-            perplexity_client = openai.OpenAI(api_key=str(PERPLEXITY_API_KEY), base_url="https://api.perplexity.ai")
+            openai_client = OpenAI(api_key=str(OPENAI_API_KEY))
+            perplexity_client = OpenAI(api_key=str(PERPLEXITY_API_KEY), base_url="https://api.perplexity.ai")
 
             # --- Smart Intake ---
             is_complete, extracted_data = smart_intake_agent(uploaded_files, openai_client)
