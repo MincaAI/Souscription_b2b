@@ -1,0 +1,7 @@
+streamlit
+openai
+perplexity-ai
+pypdf
+python-docx
+openpyxl
+python-dotenv 
