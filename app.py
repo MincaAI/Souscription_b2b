@@ -32,6 +32,12 @@ REQUIRED_DOCS_LIST = [
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 PERPLEXITY_API_KEY = os.getenv("PERPLEXITY_API_KEY")
 
+# On nettoie les clés pour enlever les espaces accidentels (cause fréquente d'erreurs)
+if OPENAI_API_KEY:
+    OPENAI_API_KEY = OPENAI_API_KEY.strip()
+if PERPLEXITY_API_KEY:
+    PERPLEXITY_API_KEY = PERPLEXITY_API_KEY.strip()
+
 
 # --- Fonctions d'Extraction de Texte ---
 
